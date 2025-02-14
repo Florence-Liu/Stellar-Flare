@@ -20,9 +20,9 @@ library(zoo)
 ```
 
 ```{r data, message=F, warning=F, include=F}
-data013 <- read.csv("../Stellar-Flare/Output/Data/013179991_flux_only.csv")
-data129 <- read.csv("./Stellar-Flare/Output/Data/129646813_flux_only.csv")
-data031 <- read.csv("./Stellar-Flare/Output/Data/031381302_flux_only.csv")
+data013 <- read.csv("./Output/Data/013179991_flux_only.csv")
+data129 <- read.csv("./Output/Data/129646813_flux_only.csv")
+data031 <- read.csv("./Output/Data/031381302_flux_only.csv")
 ```
 
 ```{r process, message=F, warning=F, include=F}
