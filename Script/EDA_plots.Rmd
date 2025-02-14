@@ -5,13 +5,6 @@ date: "2025-02-09"
 output: pdf_document
 ---
 
-```{r data, message=F, warning=F, include=F}
-setwd("/Users/florenceliu/Downloads/uoft/MSc/2025 winter/sta2453/stellar flare")
-data_013 <- read.csv("0131799991.csv")
-data_129 <- read.csv("129646813.csv")
-data_031 <- read.csv("031381302.csv")
-```
-
 ```{r setup, message=F, warning=F, include=F}
 library(tidyverse)
 library(ggplot2)
@@ -26,9 +19,15 @@ library(imputeTS)
 library(zoo)
 ```
 
+```{r data, message=F, warning=F, include=F}
+data013 <- read.csv("../Stellar-Flare/Output/Data/013179991_flux_only.csv")
+data129 <- read.csv("./Stellar-Flare/Output/Data/129646813_flux_only.csv")
+data031 <- read.csv("./Stellar-Flare/Output/Data/031381302_flux_only.csv")
+```
+
 ```{r process, message=F, warning=F, include=F}
 data013_flux <- data_013 |> select(time, pdcsap_flux)
-data129_flux <- data_129 |> select(time, pdcsap_flux)
+data129_flux <- da.ta_129 |> select(time, pdcsap_flux)
 data031_flux <- data_031 |> select(time, pdcsap_flux)
 data_013$time <- ymd(data_013$time)
 data_129$time <- ymd(data_129$time)

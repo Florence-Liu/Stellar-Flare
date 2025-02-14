@@ -11,6 +11,6 @@ data031_flux <- data_031 |> select(time, pdcsap_flux)
 summary(data013_flux);summary(data129_flux);summary(data031_flux)
 
 
-write.csv(data013_flux, "./Output/Data/013179991_flux_only", row.names = F)
-write.csv(data129_flux, "./Output/Data/129646813_flux_only", row.names = F)
-write.csv(data031_flux, "./Output/Data/031381302_flux_only", row.names = F)
+# write.csv(data013_flux, "./Output/Data/013179991_flux_only", row.names = F)
+# write.csv(data129_flux, "./Output/Data/129646813_flux_only", row.names = F)
+# write.csv(data031_flux, "./Output/Data/031381302_flux_only", row.names = F)
