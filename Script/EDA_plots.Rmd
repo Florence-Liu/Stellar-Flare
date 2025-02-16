@@ -20,21 +20,18 @@ library(zoo)
 ```
 
 ```{r data, message=F, warning=F, include=F}
-data013 <- read.csv("./Output/Data/013179991_flux_only.csv")
-data129 <- read.csv("./Output/Data/129646813_flux_only.csv")
-data031 <- read.csv("./Output/Data/031381302_flux_only.csv")
+data_013 <- read.csv("../Output/Data/013179991_flux_only.csv")
+data_129 <- read.csv("../Output/Data/129646813_flux_only.csv")
+data_031 <- read.csv("../Output/Data/031381302_flux_only.csv")
 ```
 
 ```{r process, message=F, warning=F, include=F}
-data013_flux <- data_013 |> select(time, pdcsap_flux)
-data129_flux <- da.ta_129 |> select(time, pdcsap_flux)
-data031_flux <- data_031 |> select(time, pdcsap_flux)
 data_013$time <- ymd(data_013$time)
 data_129$time <- ymd(data_129$time)
 data_031$time <- ymd(data_031$time)
 ```
 
-```{r, message=F, warning=F}
+```{r summary, message=F, warning=F}
 dataset_summary <- function(df, name) {
   cat("\nDataset:", name, "\n")
   print(str(df))
@@ -42,22 +39,22 @@ dataset_summary <- function(df, name) {
   print(colSums(is.na(df)))  # Missing values count
 }
 
-dataset_summary(data013_flux, "TIC 0131799991")
-dataset_summary(data129_flux, "TIC 129646813")
-dataset_summary(data031_flux, "TIC 031381302")
+dataset_summary(data_013, "TIC 0131799991")
+dataset_summary(data_129, "TIC 129646813")
+dataset_summary(data_031, "TIC 031381302")
 ```
 
-```{r message=F, warning=F}
-plot(data013_flux$time, data013_flux$pdcsap_flux, type = "l", col = "forestgreen",
+```{r ts_plot, message=F, warning=F}
+plot(data_013$time, data_013$pdcsap_flux, type = "l", col = "forestgreen",
      xlab = "Time", ylab = "Flux", main = "TIC 0131799991")
-plot(data129_flux$time, data129_flux$pdcsap_flux, type = "l", col = "goldenrod1",
+plot(data_129$time, data_129$pdcsap_flux, type = "l", col = "goldenrod1",
      xlab = "Time", ylab = "Flux", main = "TIC 129646813")
-plot(data031_flux$time, data031_flux$pdcsap_flux, type = "l", col = "lightsteelblue2",
+plot(data_031$time, data_031$pdcsap_flux, type = "l", col = "lightsteelblue2",
      xlab = "Time", ylab = "Flux", main = "TIC 031381302")
 
 ```
 
-```{r, message=F, warning=F}
+```{r missing_data, message=F, warning=F}
 missing_data_plots <- function(df, name) {
   # Heatmap of missing values
   missing_df <- df %>% mutate_all(~ifelse(is.na(.), 1, 0)) %>% pivot_longer(everything())
@@ -67,12 +64,12 @@ missing_data_plots <- function(df, name) {
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
-missing_data_plots(data013_flux, "TIC 0131799991")
-missing_data_plots(data129_flux, "TIC 129646813")
-missing_data_plots(data031_flux, "TIC 031381302")
+missing_data_plots(data_013, "TIC 0131799991")
+missing_data_plots(data_129, "TIC 129646813")
+missing_data_plots(data_031, "TIC 031381302")
 ```
 
-```{r, message=F, warning=F}
+```{r ts, message=F, warning=F}
 time_series_analysis <- function(df, name) {
   # Ensure the time column is treated as a date
   df$time <- ymd(df$time)
@@ -103,11 +100,13 @@ time_series_analysis <- function(df, name) {
   print(decomposed_stl_plot)
 }
 
-time_series_analysis(data013_flux, "TIC 0131799991")
-time_series_analysis(data129_flux, "TIC 129646813")
-time_series_analysis(data031_flux, "TIC 031381302")
+time_series_analysis(data_013, "TIC 0131799991")
+time_series_analysis(data_129, "TIC 129646813")
+time_series_analysis(data_031, "TIC 031381302")
 ```
-```{r, message=F, warning=F}
+
+
+```{r impute_missing, message=F, warning=F}
 impute_missing_values <- function(df, name) {
   # Ensure the time column is treated as a date
   df$time <- ymd(df$time)
@@ -140,8 +139,20 @@ impute_missing_values <- function(df, name) {
     scale_color_manual(values=c("goldenrod", "forestgreen", "darkred", "black", "lightsteelblue3", "purple4", "pink2"))
 }
 
-impute_missing_values(data013_flux, "TIC 0131799991")
-impute_missing_values(data129_flux, "TIC 129646813")
-impute_missing_values(data031_flux, "TIC 031381302")
+impute_missing_values(data_013, "TIC 0131799991")
+impute_missing_values(data_129, "TIC 129646813")
+impute_missing_values(data_031, "TIC 031381302")
 ```
+
+```{r, message=F, warning=F}
+
+
+```
+
+
+
+
+
+
+
 
