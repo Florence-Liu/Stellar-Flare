@@ -2,8 +2,26 @@
 title: "EDA"
 author: "Yufei Liu"
 date: "2025-02-09"
-output: pdf_document
+output:
+  bookdown::pdf_document2:
+    extra_dependencies: 
+    - "subfig"
+    - "float"
+toc: FALSE
 ---
+# Data summary
+
+In this project, we are interested in detecting stellar flares using different methods and compare the model performance for three stars using TESS light curve data for TIC 0131799991, TIC 129646813, and TIC 031381302. We mainly focused on two variables from the dataset, time and PDCSAF Flux, which refers to the corrected flux after summing the calibrated pixels within the TESS optimal photometric aperture. The original dataset, although, includes missing values for both flux and time, which could be a problem when we modeling the data.
+
+For the following exploratory data analysis, I will use data for TIC 013799991 as an example, and will expand the implements to other two stars.
+
+It is noticeable for TIC 013799991 that it actually has a missing period between time index 1529 to 1535, which may be the result of instrumental errors. For the missing values in flux, as shown in Figure 1, the heatmap shows that 
+
+```{r heatmap, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result of the experiment for estimating radius of the Earth. Figure (a) shows the measured data $\\Delta g$ vs. $\\Delta R$ with the orange line representing the best fit. Figure (b) is the residual plot with orange line representing zero line",fig.subcap=c("Data", "Residual"), fig.align='center', fig.pos="H"}
+library(knitr)
+include_graphics("../Output/Figure/heatmap_013.png")
+include_graphics("../Output/Figure/ts_plot_before_013.png")
+```
 
 |Index|   Time  | PDCSAF Flux|
 |:----|--------:|-----------:|
@@ -16,3 +34,9 @@ output: pdf_document
 |8349 | 1535.006|    2487.144|
 |8350 | 1535.007|    2479.111|
 |8351 | 1535.008|    2488.168|
+
+
+
+# Handling missing data
+
+
