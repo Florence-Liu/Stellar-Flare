@@ -62,8 +62,9 @@ acf(data_013_ts_drop_missing, lag.max = 500, main =
                   "Autocorrelation - TIC 0131799991")
 acf(data_013_ts_drop_missing, lag.max = 50, main = 
                   "Autocorrelation - TIC 0131799991")
-acf(ts(diff(data_013_ts_drop_missing)), main = "Autocorrelation First Difference")
-ts.plot(diff(data_013_ts_drop_missing), main = "Time Series Plot First Difference")
+ts_first_diff <- ts(diff(data_013_ts_drop_missing))
+acf(ts_first_diff, main = "Autocorrelation First Difference")
+ts.plot(ts_first_diff, main = "Time Series Plot First Difference")
 acf(data_013_ts_drop_missing, lag.max = 30, type = "partial", 
                  main = "Partial Autocorrelation - TIC 0131799991")
 

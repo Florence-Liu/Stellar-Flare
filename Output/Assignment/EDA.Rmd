@@ -18,7 +18,7 @@ For the following exploratory data analysis, I will use data for TIC 013799991 a
 
 It is noticeable for TIC 013799991 that it actually has a missing period between time index 1529 to 1535 as shown in Table @ref(tab:summary), which may be the result of instrumental errors. For the missing values in flux, as shown in Figure @ref(fig:ts-2), the heatmap shows that only the very first a few observations are missing (observation in light blue). In this case, since the time in the data refers to the Barycentric Julian Date, instead of converting it to a `ymd` variable, I kept the original numeric number since I found it is unnecessary to convert and may introduce extra errors in the process. So the heatmap did not show the missing period in time.
 
-```{r ts, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Visualization of time series TIC 0131799991",fig.subcap=c("Time Series Plot", "Heatmap"), fig.align='center', fig.pos="H"}
+```{r ts, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Visualization of Time Series TIC 0131799991",fig.subcap=c("Time Series Plot", "Heatmap"), fig.align='center', fig.pos="H"}
 library(knitr)
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ts_plot_before_013.png")
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/heatmap_013.png")
@@ -42,15 +42,17 @@ Table: (\#tab:summary) Part of data with missing period
 
 Since it is a time series data, I conducted the time series analysis to check some features of the dataset, including the ACF, PACF, and seasonal trend decomposition.
 
-Figure @ref(fig:acf) shows the autocorrelation plots for the star, with different maximum lags. Figure @ref(fig:acf-1) shows 
+Figure @ref(fig:acf) shows the autocorrelation plots for the star, with different maximum lags. Figure @ref(fig:acf-1) shows autocorrelation for first 50 lags. We could see that the behaviour for the ACF shows a damped exponential dying down with oscillation, and in Figure @ref(fig:acf-2), when I extended the ACF plot to 500 lags, we could see that there existing repeating peaks at around 150 after scaling, indicating the original time series is non-stationary. So I tried to take the first difference of the time series and got the new ACF as shown in @ref(fig:acf-3), it looks like there are 5 spikes in the plot, indicating highly correlated lags.
 
-```{r acf, message=FALSE, warning=F, out.width = "35%", echo=FALSE, fig.cap="ACF for time series TIC 0131799991 with different maximum lag",fig.subcap=c("50 lags", "h", "500 lags"), fig.align='center', fig.pos="H"}
+```{r acf, message=FALSE, warning=F, out.width = "35%", echo=FALSE, fig.cap="Autocorrelation Plots for Time Series TIC 0131799991",fig.subcap=c("50 lags", "First difference", "500 lags"), fig.align='center', fig.pos="H"}
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max50.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/first_differnce_013.png")
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max500.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/first_difference_013.png")
 ```
 
-```{r stl, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for PACF and STL decomposition",fig.subcap=c("PACF", "STL decompositioin"), fig.align='center', fig.pos="H"}
+Figure @ref(fig:stl-1) shows the Partial Autocorrelation plot for the original time series, we could see there are approximately 8 spikes, suggesting a AR(8) model may be useful. Combined with the ACF plots, an ARIMA model (8, 0, 4) $\times$ (1, 0, 0) may be useful. To better see the trend and seasonality, I used the Seasonal-Trend Decomposition using Loess. As shown in Figure @ref(fig:stl-2), there seems to be no seasonality in this data since the seasonal plot spreads equally around 0. For the trend, we could clear see that there are several local peaks, indicating the existence of flares, but needs to be furthur investigated. The most possible flares could occur at index 13 and index 80.
+
+```{r stl, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Partial Autocorrelation and STL Decomposition",fig.subcap=c("PACF", "STL decompositioin"), fig.align='center', fig.pos="H"}
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/PACF_013.png")
 include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/decomposition_013.png")
 ```
@@ -58,4 +60,23 @@ include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/
 
 # Handling missing data
 
+Since I'm interested in comparing model performance for ARIMA Model, DBSCAN, and Gaussian Mixture Model, handling missing data is necessary for some these models (DBSCAN and ARIMA). In this case, I focused on the gap between 1529 and 1535, using several different methods First is to use the `imputeTS` package, which is a package used in `R` for univariate time series missing data imputations. I tried to use model-based imputations including ARIMA model and Exponentially Weighted Moving Average. I also tried rolling statistics approach. Another approach is to split the time series into pre-gap and post-gap datasets, using pre-gap data as training data to model and forecast the missing values. 
 
+Figure @ref(fig:imputes-1) shows that the result for ARIMA model using Kalman Smoothing and State-Space Representations. The yellow line fills the gap as well as the missing flux at the beginning. For Figure @ref(fig:imputes-2), the exponentially weighted moving average gives a really bad result, which may because of the trend of original data and large gap.
+
+Figure @ref(fig:rolling-1) shows the imputation result using rolling mean with window of 5, which means taking mean pf 5 closest observations to substitute the missing values. It is helpful since our missing data may be non-random, however, the choice of window size affects the result. Also, the our gap is relatively large, using mean of neighbours highly depends on the previous substitute result, so we could see that the effect is not that satisfying. Figure @ref(fig:rolling-2) shows the result for approach two, which I split the pre-gap data as training data to build an ARIMA model and forecast the missing values. In this case, I assumed that the behaviour during the missing period could be similar to the pre-gap period. The effect is not very good as for the time near the observed ones, the forecast could be useful, however, same problems happened as later forecast depend on the previous ones, making the forecast go to very similar values. This may due to the large forecast size I chose as for each time interval of 0.001.
+
+
+```{r imputes, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Sample Imputation of Missing Data using ImputeTS package",fig.subcap=c("ARIMA", "EWMA"), fig.align='center', fig.pos="H"}
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ARIMA_imputeTS_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/EWMA_013.png")
+```
+
+
+
+```{r rolling, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Sample Imputation of Missing Data using Rolling Window Mean and Forecast",fig.subcap=c("Rolling Mean", "Forecast"), fig.align='center', fig.pos="H"}
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/Rolling_Mean_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/Pre-gap_imputation_013.png")
+```
+
+The final thought was to simply remove the missing values and consider model the time series separately, i.e. pre-gap and post-gap. As shown in Figure @ref(fig:ts-2), the missing values of flux, the variable we care about, have a very small proportion, which may not affect a lot on the model performance. In this case, we still assume the behaviour during the missing period is similar to that in the observed data.
