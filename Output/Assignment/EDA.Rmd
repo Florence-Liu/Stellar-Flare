@@ -8,6 +8,7 @@ output:
     - "subfig"
     - "float"
 toc: FALSE
+thanks: "Code and data are available at: https://github.com/Florence-Liu/Stellar-Flare"
 ---
 # Data summary
 
@@ -15,13 +16,16 @@ In this project, we are interested in detecting stellar flares using different m
 
 For the following exploratory data analysis, I will use data for TIC 013799991 as an example, and will expand the implements to other two stars.
 
-It is noticeable for TIC 013799991 that it actually has a missing period between time index 1529 to 1535, which may be the result of instrumental errors. For the missing values in flux, as shown in Figure 1, the heatmap shows that 
+It is noticeable for TIC 013799991 that it actually has a missing period between time index 1529 to 1535 as shown in Table @ref(tab:summary), which may be the result of instrumental errors. For the missing values in flux, as shown in Figure @ref(fig:ts-2), the heatmap shows that only the very first a few observations are missing (observation in light blue). In this case, since the time in the data refers to the Barycentric Julian Date, instead of converting it to a `ymd` variable, I kept the original numeric number since I found it is unnecessary to convert and may introduce extra errors in the process. So the heatmap did not show the missing period in time.
 
-```{r heatmap, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result of the experiment for estimating radius of the Earth. Figure (a) shows the measured data $\\Delta g$ vs. $\\Delta R$ with the orange line representing the best fit. Figure (b) is the residual plot with orange line representing zero line",fig.subcap=c("Data", "Residual"), fig.align='center', fig.pos="H"}
+```{r ts, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Visualization of time series TIC 0131799991",fig.subcap=c("Time Series Plot", "Heatmap"), fig.align='center', fig.pos="H"}
 library(knitr)
-include_graphics("../Output/Figure/heatmap_013.png")
-include_graphics("../Output/Figure/ts_plot_before_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ts_plot_before_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/heatmap_013.png")
 ```
+
+
+
 
 |Index|   Time  | PDCSAF Flux|
 |:----|--------:|-----------:|
@@ -34,7 +38,22 @@ include_graphics("../Output/Figure/ts_plot_before_013.png")
 |8349 | 1535.006|    2487.144|
 |8350 | 1535.007|    2479.111|
 |8351 | 1535.008|    2488.168|
+Table: (\#tab:summary) Part of data with missing period
 
+Since it is a time series data, I conducted the time series analysis to check some features of the dataset, including the ACF, PACF, and seasonal trend decomposition.
+
+Figure @ref(fig:acf) shows the autocorrelation plots for the star, with different maximum lags. Figure @ref(fig:acf-1) shows 
+
+```{r acf, message=FALSE, warning=F, out.width = "35%", echo=FALSE, fig.cap="ACF for time series TIC 0131799991 with different maximum lag",fig.subcap=c("50 lags", "h", "500 lags"), fig.align='center', fig.pos="H"}
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max50.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/first_differnce_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max500.png")
+```
+
+```{r stl, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for PACF and STL decomposition",fig.subcap=c("PACF", "STL decompositioin"), fig.align='center', fig.pos="H"}
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/PACF_013.png")
+include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/decomposition_013.png")
+```
 
 
 # Handling missing data

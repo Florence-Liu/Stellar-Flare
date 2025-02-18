@@ -58,11 +58,13 @@ ggplot(data_013_drop_missing, aes(x = time, y = pdcsap_flux)) +
 ### ACF and PACF ###
 data_013_ts <- ts(data_013$pdcsap_flux, frequency = 150) 
 data_013_ts_drop_missing <- ts(data_013_drop_missing$pdcsap_flux, frequency = 150) 
-acf_plot <- acf(data_013_ts_drop_missing, lag.max = 500, main = 
+acf(data_013_ts_drop_missing, lag.max = 500, main = 
                   "Autocorrelation - TIC 0131799991")
-acf_plot <- acf(data_013_ts_drop_missing, lag.max = 50, main = 
+acf(data_013_ts_drop_missing, lag.max = 50, main = 
                   "Autocorrelation - TIC 0131799991")
-pacf_plot <- acf(data_013_ts_drop_missing, lag.max = 30, type = "partial", 
+acf(ts(diff(data_013_ts_drop_missing)), main = "Autocorrelation First Difference")
+ts.plot(diff(data_013_ts_drop_missing), main = "Time Series Plot First Difference")
+acf(data_013_ts_drop_missing, lag.max = 30, type = "partial", 
                  main = "Partial Autocorrelation - TIC 0131799991")
 
 ### Time Series Decomposition ###
