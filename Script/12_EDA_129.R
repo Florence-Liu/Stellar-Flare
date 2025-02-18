@@ -16,4 +16,4 @@ library(imputeTS)
 library(zoo)
 
 #### Download data ####
-data_129 <- read.csv("../Output/Data/129646813_flux_only.csv")
+data_129 <- read.csv("./Output/Data/129646813_flux_only.csv")

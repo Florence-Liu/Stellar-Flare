@@ -144,10 +144,6 @@ impute_missing_values(data_129, "TIC 129646813")
 impute_missing_values(data_031, "TIC 031381302")
 ```
 
-```{r, message=F, warning=F}
-
-
-```
 
 
 
