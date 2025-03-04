@@ -67,6 +67,7 @@ acf(ts_first_diff, main = "Autocorrelation First Difference")
 ts.plot(ts_first_diff, main = "Time Series Plot First Difference")
 acf(data_013_ts_drop_missing, lag.max = 30, type = "partial", 
                  main = "Partial Autocorrelation - TIC 0131799991")
+acf(ts_first_diff, type = "partial", main = "Autocorrelation First Difference")
 
 ### Time Series Decomposition ###
 # decomposed <- decompose(ts_data, type="multiplicative")
