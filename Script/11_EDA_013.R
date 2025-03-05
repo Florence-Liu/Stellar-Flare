@@ -142,3 +142,5 @@ ggplot(data_013_sim, aes(x = time, y =as.numeric(pdcsap_flux), color = category)
   scale_color_manual(values = c("observed" = "black", "forecasted" = "red")) +
   theme_minimal()
 
+#### Save cleaned data #### 
+# write.csv(data_013_sim, "./Output/Data/013179991_flux_sim.csv", row.names = F)

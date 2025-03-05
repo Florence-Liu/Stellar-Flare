@@ -91,3 +91,5 @@ ggplot(data_031_sim, aes(x = time)) +
   theme_minimal() +
   scale_color_manual(values=c("goldenrod", "black"))
 
+#### Save cleaned data #### 
+# write.csv(data_031_sim, "./Output/Data/031381302_flux_sim.csv", row.names = F)

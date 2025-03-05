@@ -92,3 +92,6 @@ ggplot(data_129_sim, aes(x = time)) +
   labs(x = "Time", y = "PDCSAP Flux") +
   theme_minimal() +
   scale_color_manual(values=c("goldenrod", "black"))
+
+#### Save cleaned data #### 
+# write.csv(data_129_sim, "./Output/Data/129646813_flux_sim.csv", row.names = F)
