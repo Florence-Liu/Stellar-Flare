@@ -71,3 +71,6 @@ plot(bjd_times_residuals, arima_res,
 points(bjd_times_residuals[anomalies], arima_res[anomalies], 
        col = "red", pch = 19, cex = 0.5)
 abline(h = c(threshold_upper, threshold_lower), col = "blue", lty = 2)
+
+#### Save model ####
+# saveRDS(arima_model, "./Output/Model/ARIMA_model.rds")
