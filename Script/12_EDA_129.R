@@ -25,7 +25,7 @@ print(summary(data_129))
 print(colSums(is.na(data_129))) 
 print(data_129[9410:9415, ])
 
-#### Heatmap of  missing data ####
+#### Heatmap of missing data ####
 missing_df <- data_129 %>% mutate_all(~ifelse(is.na(.), 1, 0)) %>% 
   pivot_longer(everything())
 ggplot(missing_df, aes(x = name, y = as.numeric(row.names(missing_df)),
@@ -53,8 +53,8 @@ ggplot(data_129_drop_missing, aes(x = time, y = pdcsap_flux)) +
 
 
 ### ACF and PACF ###
-data_129_ts <- ts(data_129$pdcsap_flux, frequency = 150) 
-data_129_ts_drop_missing <- ts(data_129_drop_missing$pdcsap_flux, frequency = 150) 
+data_129_ts <- ts(data_129$pdcsap_flux, frequency = 1000) 
+data_129_ts_drop_missing <- ts(data_129_drop_missing$pdcsap_flux, frequency = 1000) 
 acf(data_129_ts_drop_missing, lag.max = 500, main = 
       "Autocorrelation - TIC 129646813")
 acf(data_129_ts_drop_missing, lag.max = 50, main = 
@@ -81,7 +81,7 @@ simulated_time <- seq(1338.527, 1339.660, by=0.001)
 df_simulated <- data.frame(time = simulated_time)
 data_129_sim <- merge(data_129, df_simulated, by = "time", all = TRUE)
 data_129_sim <- data_129_sim %>% arrange(time)
-data_129_sim_ts <- ts(data_129_sim$pdcsap_flux, frequency = 150)
+data_129_sim_ts <- ts(data_129_sim$pdcsap_flux, frequency = 1000)
 
 ## using imputeTS package ##
 # ARIMA #

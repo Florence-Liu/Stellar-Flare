@@ -56,8 +56,8 @@ ggplot(data_013_drop_missing, aes(x = time, y = pdcsap_flux)) +
 
 
 ### ACF and PACF ###
-data_013_ts <- ts(data_013$pdcsap_flux, frequency = 150) 
-data_013_ts_drop_missing <- ts(data_013_drop_missing$pdcsap_flux, frequency = 150) 
+data_013_ts <- ts(data_013$pdcsap_flux, frequency = 1000) 
+data_013_ts_drop_missing <- ts(data_013_drop_missing$pdcsap_flux, frequency = 1000) 
 acf(data_013_ts_drop_missing, lag.max = 500, main = 
                   "Autocorrelation - TIC 0131799991")
 acf(data_013_ts_drop_missing, lag.max = 50, main = 
@@ -83,7 +83,7 @@ simulated_time <- seq(1529.069, 1535.000, length.out = 5930)
 df_simulated <- data.frame(time = simulated_time)
 data_013_sim <- merge(data_013, df_simulated, by = "time", all = TRUE)
 data_013_sim <- data_013_sim %>% arrange(time)
-data_013_sim_ts <- ts(data_013_sim$pdcsap_flux, frequency = 150)
+data_013_sim_ts <- ts(data_013_sim$pdcsap_flux, frequency = 1000)
 
 ## using imputeTS package ##
 # ARIMA #
