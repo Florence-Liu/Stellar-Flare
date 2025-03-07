@@ -14,7 +14,6 @@ The repo is structured as:
     - `Document` contains data description and project introduction.
 -   `Scripts` contains R and Jupyter notebook scripts used to clean the data and fit models.
 -   `Outputs` contains all outputs including final model, paper, and cleaned data.
-    -   `Assignment` contains proposal, EDA, progress report, final report and presentation.
+    -   `Assignment` contains files and figures used to generate proposal, EDA, progress report, final report and presentation.
     -   `Data` contains cleaned data after handling missing values and used to fit models.
     -   `Model` contains models for different methods.
-    -   `Figures` contains  figures used to generate reports and show important results.    
