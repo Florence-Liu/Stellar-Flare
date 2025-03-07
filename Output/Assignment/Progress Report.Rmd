@@ -4,6 +4,7 @@ author: "Yufei Liu"
 date: "2025-03-03"
 output:
   bookdown::pdf_document2:
+    keep_tex: yes
     extra_dependencies: 
     - "subfig"
     - "float"
@@ -22,10 +23,11 @@ Stellar flares refers to
 
 # Data
 
-
+The data we used in this project is the light curve 
 
 # Methods
 ## Time Series Analysis
+
 
 
 ## Machine Learning Methods

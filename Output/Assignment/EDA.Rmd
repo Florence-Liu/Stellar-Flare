@@ -4,6 +4,7 @@ author: "Yufei Liu"
 date: "2025-02-09"
 output:
   bookdown::pdf_document2:
+    keep_tex: yes
     extra_dependencies: 
     - "subfig"
     - "float"
