@@ -39,8 +39,7 @@ ggplot(missing_df, aes(x = name, y = as.numeric(row.names(missing_df)),
 ### Plot time series ###
 ggplot(data_129, aes(x = time, y = pdcsap_flux)) +
   geom_line() +
-  labs(title=paste("Time Series Plot -", "TIC 129646813"),
-       x="Time", y="PDCSAP Flux") +
+  labs(x="Time", y="PDCSAP Flux") +
   theme_minimal()
 
 data_129_drop_missing <- data_129 %>% drop_na(pdcsap_flux) %>% drop_na(time)

@@ -45,6 +45,8 @@ arima_model <- auto.arima(data_129_ts, seasonal = FALSE, stepwise = FALSE,
                           approximation = FALSE)
 summary(arima_model)
 
+arima_model <- readRDS("./Output/Model/ARIMA_model.rds")
+
 ### Diagnostic ###
 ## Portmanteau test ##
 arima_res <- residuals(arima_model)

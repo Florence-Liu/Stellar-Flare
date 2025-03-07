@@ -20,8 +20,8 @@ It is noticeable for TIC 013799991 that it actually has a missing period between
 
 ```{r ts, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Visualization of Time Series TIC 0131799991",fig.subcap=c("Time Series Plot", "Heatmap"), fig.align='center', fig.pos="H"}
 library(knitr)
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ts_plot_before_013.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/heatmap_013.png")
+include_graphics("Output/Figure/ts_plot_before_013.png")
+include_graphics("Output/Figure/heatmap_013.png")
 ```
 
 
@@ -45,16 +45,16 @@ Since it is a time series data, I conducted the time series analysis to check so
 Figure @ref(fig:acf) shows the autocorrelation plots for the star, with different maximum lags. Figure @ref(fig:acf-1) shows autocorrelation for first 50 lags. We could see that the behaviour for the ACF shows a damped exponential dying down with oscillation, and in Figure @ref(fig:acf-2), when I extended the ACF plot to 500 lags, we could see that there existing repeating peaks at around 150 after scaling, indicating the original time series is non-stationary. So I tried to take the first difference of the time series and got the new ACF as shown in @ref(fig:acf-3), it looks like there are 5 spikes in the plot, indicating highly correlated lags.
 
 ```{r acf, message=FALSE, warning=F, out.width = "35%", echo=FALSE, fig.cap="Autocorrelation Plots for Time Series TIC 0131799991",fig.subcap=c("50 lags", "First difference", "500 lags"), fig.align='center', fig.pos="H"}
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max50.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ACF_013_max500.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/first_difference_013.png")
+include_graphics("./Output/Figure/ACF_013_max50.png")
+include_graphics("./Output/Figure/ACF_013_max500.png")
+include_graphics("./Output/Figure/first_difference_013.png")
 ```
 
 Figure @ref(fig:stl-1) shows the Partial Autocorrelation plot for the original time series, we could see there are approximately 8 spikes, suggesting a AR(8) model may be useful. Combined with the ACF plots, an ARIMA model (8, 0, 4) $\times$ (1, 0, 0) may be useful. To better see the trend and seasonality, I used the Seasonal-Trend Decomposition using Loess. As shown in Figure @ref(fig:stl-2), there seems to be no seasonality in this data since the seasonal plot spreads equally around 0. For the trend, we could clear see that there are several local peaks, indicating the existence of flares, but needs to be furthur investigated. The most possible flares could occur at index 13 and index 80.
 
 ```{r stl, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Partial Autocorrelation and STL Decomposition",fig.subcap=c("PACF", "STL decompositioin"), fig.align='center', fig.pos="H"}
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/PACF_013.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/decomposition_013.png")
+include_graphics("./Output/Figure/PACF_013.png" )
+include_graphics("./Output/Figure/decomposition_013.png")
 ```
 
 
@@ -68,15 +68,15 @@ Figure @ref(fig:rolling-1) shows the imputation result using rolling mean with w
 
 
 ```{r imputes, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Sample Imputation of Missing Data using ImputeTS package",fig.subcap=c("ARIMA", "EWMA"), fig.align='center', fig.pos="H"}
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/ARIMA_imputeTS_013.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/EWMA_013.png")
+include_graphics("./Output/Figure/ARIMA_imputeTS_013.png")
+include_graphics("./Output/Figure/EWMA_013.png")
 ```
 
 
 
 ```{r rolling, message=FALSE, warning=F, out.width = "50%", echo=FALSE, fig.cap="Result for Sample Imputation of Missing Data using Rolling Window Mean and Forecast",fig.subcap=c("Rolling Mean", "Forecast"), fig.align='center', fig.pos="H"}
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/Rolling_Mean_013.png")
-include_graphics("~/Downloads/uoft/MSc/2025 winter/sta2453/Stellar-Flare/Output/Figure/Pre-gap_imputation_013.png")
+include_graphics("./Output/Figure/Rolling_Mean_013.png")
+include_graphics("./Output/Figure/Pre-gap_imputation_013.png")
 ```
 
 The final thought was to simply remove the missing values and consider model the time series separately, i.e. pre-gap and post-gap. As shown in Figure @ref(fig:ts-2), the missing values of flux, the variable we care about, have a very small proportion, which may not affect a lot on the model performance. In this case, we still assume the behaviour during the missing period is similar to that in the observed data.

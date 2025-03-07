@@ -2,8 +2,19 @@
 title: "Progress Report"
 author: "Yufei Liu"
 date: "2025-03-03"
-output: pdf_document
+output:
+  bookdown::pdf_document2:
+    extra_dependencies: 
+    - "subfig"
+    - "float"
+toc: FALSE
+thanks: "Code and data are available at: https://github.com/Florence-Liu/Stellar-Flare"
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message=F, warning = F)
+library(knitr)
+```
 
 # Introduction
 
@@ -14,14 +25,20 @@ Stellar flares refers to
 
 
 # Methods
+## Time Series Analysis
 
+
+## Machine Learning Methods
 
 
 # Results
+## Time Series Model
 
 
+## Machine Learning Model
 
-# Conclusion
+
+# Discussion
 
 
 
