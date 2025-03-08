@@ -1,6 +1,6 @@
 #### Preamble ####
 # Purpose: Conducting Time Series Analysis and ARIMA model on Light Curve data 
-# for TIC 129646813.
+# for TIC 129646813 without imputation.
 
 #### Workspace setup ####
 library(tidyverse)
@@ -10,11 +10,23 @@ library(tseries)
 library(portes)
 
 #### Download data ####
-data_129 <- read.csv("./Output/Data/129646813_flux_sim.csv")
+data_129 <- read.csv("./Output/Data/129646813_flux_only.csv")
 data_129 <- data_129 %>% arrange(time)
 
 #### EDA ####
-data_129_ts <- ts(data_129$pdcsap_flux_arma, frequency = 1000)
+sum(is.na(data_129$pdcsap_flux))
+print(data_129[9410:9415, ])
+missing_df <- data_129 %>% mutate_all(~ifelse(is.na(.), 1, 0)) %>% 
+  pivot_longer(everything())
+ggplot(missing_df, aes(x = name, y = as.numeric(row.names(missing_df)),
+                       fill = value)) +
+  geom_tile() +
+  labs(title=paste("Missing Data Heatmap -", "TIC 129646813"),
+       x="Variables", y="Rows") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+data_129 <- drop_na(data_129) # drop missing values
+data_129_ts <- ts(data_129$pdcsap_flux, frequency = 1000)
 plot(data_129_ts)
 acf(data_129_ts)
 acf(data_129_ts, type = "partial")
@@ -45,7 +57,7 @@ arima_model <- auto.arima(data_129_ts, seasonal = FALSE, stepwise = FALSE,
                           approximation = FALSE)
 summary(arima_model)
 
-arima_model <- readRDS("./Output/Model/ARIMA_model_129.rds")
+arima_model <- readRDS("./Output/Model/ARIMA_model_129_without_imputation.rds")
 
 ### Diagnostic ###
 ## Portmanteau test ##
@@ -75,4 +87,4 @@ points(bjd_times_residuals[anomalies], arima_res[anomalies],
 abline(h = c(threshold_upper, threshold_lower), col = "blue", lty = 2)
 
 #### Save model ####
-# saveRDS(arima_model, "./Output/Model/ARIMA_model_129.rds")
+# saveRDS(arima_model, "./Output/Model/ARIMA_model_129_without_imputation.rds")

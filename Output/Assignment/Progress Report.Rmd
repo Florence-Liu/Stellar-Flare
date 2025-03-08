@@ -25,6 +25,11 @@ Stellar flares refers to
 
 The data we used in this project is the light curve 
 
+```{r data, out.width = "50%",fig.cap="model results",fig.subcap=c("before", "after"), fig.align='center', fig.pos="H"}
+include_graphics("Figure/ts_plot_129.png")
+include_graphics("Figure/ARIMA_ImputeTS_129.png")
+```
+
 # Methods
 ## Time Series Analysis
 
@@ -35,12 +40,34 @@ The data we used in this project is the light curve
 
 # Results
 ## Time Series Model
+### With Missing Value Imputation
+```{r ts, out.width = "50%",fig.cap="model results",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
+include_graphics("Figure/arima_129.png")
+include_graphics("Figure/res_arima_129.png")
+```
 
+### Without Missing Value Imputation
+```{r ts2, out.width = "50%",fig.cap="model results",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
+include_graphics("Figure/arima_129_without_imputation.png")
+include_graphics("Figure/res_arima_129_without_imputation.png")
+```
 
 ## Machine Learning Model
+### With Missing Value Imputation
+```{r ml, out.width = "50%",fig.cap="model results",fig.subcap=c("if", "gmm", "dbscan"), fig.align='center', fig.pos="H", fig.ncol=2}
+include_graphics("Figure/IF_1_129.png")
+include_graphics("Figure/GMM_1_129.png")
+include_graphics("Figure/DBSCAN_1_129.png")
+```
 
+### Without Missing Value Imputation
+```{r ml2, out.width = "50%",fig.cap="model results",fig.subcap=c("if", "gmm", "dbscan"), fig.align='center', fig.pos="H", fig.ncol=2}
+include_graphics("Figure/IF_1_129_without_imputation.png")
+include_graphics("Figure/GMM_1_129_without_imputation.png")
+include_graphics("Figure/DBSCAN_1_129_without_imputation.png")
+```
 
-# Discussion
+# Next Steps
 
 
 

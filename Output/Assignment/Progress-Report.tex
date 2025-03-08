@@ -93,6 +93,15 @@ Stellar flares refers to
 
 The data we used in this project is the light curve
 
+\begin{figure}[H]
+
+{\centering \subfloat[before\label{fig:data-1}]{\includegraphics[width=0.5\linewidth]{Figure/ts_plot_129} }\subfloat[after\label{fig:data-2}]{\includegraphics[width=0.5\linewidth]{Figure/ARIMA_ImputeTS_129} }
+
+}
+
+\caption{model results}\label{fig:data}
+\end{figure}
+
 \section{Methods}\label{methods}
 
 \subsection{Time Series Analysis}\label{time-series-analysis}
@@ -103,8 +112,52 @@ The data we used in this project is the light curve
 
 \subsection{Time Series Model}\label{time-series-model}
 
+\subsubsection{With Missing Value Imputation}\label{with-missing-value-imputation}
+
+\begin{figure}[H]
+
+{\centering \subfloat[result\label{fig:ts-1}]{\includegraphics[width=0.5\linewidth]{Figure/arima_129} }\subfloat[residual\label{fig:ts-2}]{\includegraphics[width=0.5\linewidth]{Figure/res_arima_129} }
+
+}
+
+\caption{model results}\label{fig:ts}
+\end{figure}
+
+\subsubsection{Without Missing Value Imputation}\label{without-missing-value-imputation}
+
+\begin{figure}[H]
+
+{\centering \subfloat[result\label{fig:ts2-1}]{\includegraphics[width=0.5\linewidth]{Figure/arima_129_without_imputation} }\subfloat[residual\label{fig:ts2-2}]{\includegraphics[width=0.5\linewidth]{Figure/res_arima_129_without_imputation} }
+
+}
+
+\caption{model results}\label{fig:ts2}
+\end{figure}
+
 \subsection{Machine Learning Model}\label{machine-learning-model}
 
-\section{Discussion}\label{discussion}
+\subsubsection{With Missing Value Imputation}\label{with-missing-value-imputation-1}
+
+\begin{figure}[H]
+
+{\centering \subfloat[if\label{fig:ml-1}]{\includegraphics[width=0.5\linewidth]{Figure/IF_1_129} }\subfloat[gmm\label{fig:ml-2}]{\includegraphics[width=0.5\linewidth]{Figure/GMM_1_129} }\newline\subfloat[dbscan\label{fig:ml-3}]{\includegraphics[width=0.5\linewidth]{Figure/DBSCAN_1_129} }
+
+}
+
+\caption{model results}\label{fig:ml}
+\end{figure}
+
+\subsubsection{Without Missing Value Imputation}\label{without-missing-value-imputation-1}
+
+\begin{figure}[H]
+
+{\centering \subfloat[if\label{fig:ml2-1}]{\includegraphics[width=0.5\linewidth]{Figure/IF_1_129_without_imputation} }\subfloat[gmm\label{fig:ml2-2}]{\includegraphics[width=0.5\linewidth]{Figure/GMM_1_129_without_imputation} }\newline\subfloat[dbscan\label{fig:ml2-3}]{\includegraphics[width=0.5\linewidth]{Figure/DBSCAN_1_129_without_imputation} }
+
+}
+
+\caption{model results}\label{fig:ml2}
+\end{figure}
+
+\section{Next Steps}\label{next-steps}
 
 \end{document}
