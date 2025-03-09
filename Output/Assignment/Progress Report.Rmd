@@ -67,7 +67,14 @@ include_graphics("Figure/GMM_1_129_without_imputation.png")
 include_graphics("Figure/DBSCAN_1_129_without_imputation.png")
 ```
 
-# Next Steps
+# Discussion
+## Current Work
+decide to use no imputation data, why
 
 
+## Next Steps
+
+Tune parameter
+
+decide validation and metric to compare model performance
 
