@@ -41,174 +41,118 @@ include_graphics("Figure/ARIMA_ImputeTS_129.png")
 # Methods
 ## Time Series Analysis
 
-To analyze the variability in the light curve data and identify potential flare events, we first model the time series using an autoregressive integrated moving average (ARIMA) approach, which could capture the temporal dependencies in the data.
+To analyze variability in the light curve data and detect potential flare events, we model the time series using an autoregressive integrated moving average (ARIMA) approach, which captures temporal dependencies.
 
-An ARIMA$(p,d,q)$ model consists of three components:
+An ARIMA$(p,d,q)$ model consists of:
 \begin{itemize}
-    \item \textbf{Autoregressive (AR) term ($p$)}: The current value of the time series is expressed as a linear function of its previous values, capturing persistent trends.
-    \item \textbf{Integrated (I) term ($d$)}: Differencing is applied to the time series $d$ times to achieve stationarity, meaning that statistical properties (such as mean and variance) remain constant over time.
-    \item \textbf{Moving Average (MA) term ($q$)}: The model includes a linear combination of past forecast errors to account for short-term fluctuations.
+    \item Autoregressive (AR) term ($p$): Captures relationships with past values.
+    \item Integrated (I) term ($d$): Differencing ensures stationarity.
+    \item Moving Average (MA) term ($q$): Models short-term fluctuations using past errors.
 \end{itemize}
 
-Mathematically, an ARIMA$(p,d,q)$ model is defined as:
+Mathematically, it is defined as:
 \begin{equation}
     \Phi_p(B)(1 - B)^d Y_t = \Theta_q(B) \epsilon_t,
 \end{equation}
-where:
-\begin{itemize}
-    \item $B$ is the backshift operator, such that $B Y_t = Y_{t-1}$,
-    \item $\Phi_p(B)$ is the autoregressive polynomial of order $p$,
-    \item $\Theta_q(B)$ is the moving average polynomial of order $q$,
-    \item $\epsilon_t$ is a white noise error term with mean zero and constant variance.
-\end{itemize}
+where $B$ is the backshift operator, $\Phi_p(B)$ and $\Theta_q(B)$ are polynomials of orders $p$ and $q$, respectively, and $\epsilon_t$ is a white noise error term. This formulation enables ARIMA to model and forecast stellar brightness variations effectively.
 
 We apply the `auto.arima` function to find the best fit model based on Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC). After fitting the model, we examine the residuals and identify outliers in the residuals using a 3-sigma criterion, where points deviating more than three standard deviations from the mean residual are flagged as anomalies.
 
 ## Machine Learning Methods
 ### Isolation Forest
 
-To further identify potential stellar flares in the TESS light curve data, we apply an unsupervised anomaly detection method known as the Isolation Forest (IF). The Isolation Forest method is based on recursive partitioning of the data, where an ensemble of randomly constructed binary trees is used to isolate data points. It is based on the assumption that because anomalous points, which are rare and significantly different from the majority, they can be isolated using few partitions.
+We then apply the Isolation Forest (IF), an unsupervised anomaly detection method based on recursive partitioning. The key idea is that anomalous points, being rare and different from the majority, are easier to isolate with fewer splits.
 
-Given a dataset $X = \{x_1, x_2, \dots, x_n\}$ with $d$ features, the Isolation Forest algorithm operates as follows:
+Given a dataset $X = \{x_1, x_2, \dots, x_n\}$, the Isolation Forest algorithm operates as follows:
 \begin{enumerate}
-    \item Select a subset of the data and repeat randomly splitting the data on randomly chosen features until each instance is isolated.
-    \item A collection of isolation trees (iTrees) is built, where each tree represents a different partitioning of the data.
-    \item The anomaly score of a data point $x$ is computed based on the average path length required to isolate $x$ across all trees. The anomaly score is defined as:
+    \item Construct multiple isolation trees (iTrees) by recursively splitting random subsets of the data along randomly chosen features.
+    \item Compute the anomaly score of each point $x$ based on its average isolation path length:
     \begin{equation}
         s(x, n) = 2^{-\frac{E(h(x))}{c(n)}}
     \end{equation}
-    where:
-    \begin{itemize}
-        \item $E(h(x))$ is the expected path length of $x$,
-        \item $c(n)$ is the average path length of an unsuccessful search in a binary tree of size $n$.
-    \end{itemize}
-    Data points with high anomaly scores are flagged as potential outliers.
+    where $E(h(x))$ is the expected path length and $c(n)$ is a normalization factor.
+    \item Points with high anomaly scores are flagged as potential outliers.
 \end{enumerate}
 
 We use the `IsolationForest` function fro `sklearn` library in Python to fit the time series data and visualize the anomaly detection results. For IF, the algorithm could handle the missing values and irregular time space, so we don't need furthur manipulation on data.
 
 ### Gaussian Mixture Model
 
-\subsection{Anomaly Detection with Gaussian Mixture Model}
+Gaussian Mixture Model (GMM) is a probabilistic approach that represents the data as a mixture of multiple Gaussian components. We could also use it to detect anomaly, which can be seen as the low-likelihood points.
 
-To identify stellar flares in the TESS light curve data, we apply the \textit{Gaussian Mixture Model} (GMM), a probabilistic model that represents the distribution of the data as a mixture of multiple Gaussian components. GMM is widely used for clustering and anomaly detection, as it provides a flexible way to model complex distributions.
-
-\subsubsection{Gaussian Mixture Model Formulation}
-
-The GMM assumes that the observed data $\mathcal{X} = \{x_1, x_2, \dots, x_n\}$ follows a mixture of $K$ Gaussian distributions, each defined by its mean and covariance. The probability density function (PDF) for a given data point $x$ is given by:
+The GMM assumes the observed data $\mathcal{X} = \{x_1, x_2, \dots, x_n\}$ follows a mixture of $K$ Gaussian distributions:
 
 \begin{equation}
     p(x) = \sum_{k=1}^{K} \pi_k \mathcal{N}(x \mid \mu_k, \Sigma_k),
 \end{equation}
 
-where:
-\begin{itemize}
-    \item $K$ is the number of Gaussian components in the mixture,
-    \item $\pi_k$ represents the mixing weight of the $k$-th Gaussian, subject to $\sum_{k=1}^{K} \pi_k = 1$,
-    \item $\mathcal{N}(x \mid \mu_k, \Sigma_k)$ is the Gaussian distribution with mean $\mu_k$ and covariance matrix $\Sigma_k$:
-    \begin{equation}
-        \mathcal{N}(x \mid \mu_k, \Sigma_k) = \frac{1}{(2\pi)^{d/2} |\Sigma_k|^{1/2}} \exp \left( -\frac{1}{2} (x - \mu_k)^T \Sigma_k^{-1} (x - \mu_k) \right).
-    \end{equation}
-\end{itemize}
+where $\pi_k$ are the mixing weights, and $\mathcal{N}(x \mid \mu_k, \Sigma_k)$ represents a Gaussian component with mean $\mu_k$ and covariance $\Sigma_k$. The parameters $(\pi_k, \mu_k, \Sigma_k)$ are estimated using the Expectation-Maximization (EM) algorithm.
 
-The parameters of the GMM ($\pi_k$, $\mu_k$, and $\Sigma_k$) are estimated using the \textit{Expectation-Maximization} (EM) algorithm, which iteratively refines the parameters by maximizing the likelihood of the observed data.
-
-\subsubsection{Implementation and Outlier Detection}
-
-For this study, we apply the GMM to the TESS light curve data, treating flux values as observations to be modeled as a mixture of normal distributions. The steps involved are:
-
-\begin{itemize}
-    \item \textbf{Preprocessing:} The flux values are normalized to ensure consistency in clustering.
-    \item \textbf{Model Fitting:} A GMM is trained with varying numbers of components $K$, selecting the optimal number using the Bayesian Information Criterion (BIC) or Akaike Information Criterion (AIC).
-    \item \textbf{Anomaly Scoring:} The likelihood of each data point is computed under the fitted GMM, where lower likelihood values indicate deviations from the learned distribution.
-    \item \textbf{Thresholding:} A threshold is determined empirically, and points with the lowest likelihoods are classified as anomalies.
-\end{itemize}
-
-By visualizing the probability density function and comparing flagged anomalies with those identified using ARIMA and Isolation Forest, we evaluate the effectiveness of GMM in detecting stellar flares. Since flares are transient increases in brightness, they are expected to belong to a low-probability region of the modeled flux distribution, making GMM a suitable approach for anomaly detection in this context.
-
+We use the `GaussianMixture` function fro `sklearn` library in Python to fit the time series data and visualize the anomaly detection results. For GMM, the algorithm could not handle the missing values, so we need to handle the missing values before fitting.
 
 ### DBSCAN
 
-\subsection{Anomaly Detection with DBSCAN}
+Another common method used for anomaly detection is Density-Based Spatial Clustering of Applications with Noise (DBSCAN), a clustering algorithm that detects anomalies as points that do not belong to any dense cluster. It partitions data into clusters based on their distance to other points.
 
-To identify stellar flares in the TESS light curve data, we apply the \textit{Density-Based Spatial Clustering of Applications with Noise} (DBSCAN) algorithm. DBSCAN is a clustering method that groups data points based on their density and can effectively detect anomalies as points that do not belong to any dense cluster. This makes it well-suited for detecting flares, which are expected to be rare and significantly different from normal stellar variability.
-
-\subsubsection{DBSCAN Algorithm}
-
-DBSCAN classifies data points into three categories:
-\begin{itemize}
-    \item \textbf{Core points}: Points that have at least a minimum number of neighbors within a specified distance.
-    \item \textbf{Border points}: Points that are within the neighborhood of a core point but do not meet the density criteria themselves.
-    \item \textbf{Noise (Outliers)}: Points that do not belong to any cluster, often representing anomalies.
-\end{itemize}
-
-The algorithm operates as follows:
-\begin{enumerate}
-    \item \textbf{Neighborhood Identification}: For each point $x_i$, count the number of points within a predefined distance $\epsilon$.
-    \item \textbf{Cluster Formation}: If $x_i$ has at least $MinPts$ neighbors, it is a \textit{core point}, and a new cluster is formed.
-    \item \textbf{Density Expansion}: The cluster is expanded by recursively adding reachable core and border points.
-    \item \textbf{Outlier Detection}: Points that are not assigned to any cluster are classified as anomalies.
-\end{enumerate}
-
-\subsubsection{Implementation and Outlier Detection}
-
-For this study, we apply DBSCAN to the TESS light curve data, treating flux values as input for clustering and anomaly detection. The implementation consists of the following steps:
-
-\begin{itemize}
-    \item \textbf{Preprocessing:} The flux values are standardized to ensure consistent distance measurements.
-    \item \textbf{Hyperparameter Selection:} The parameters $\epsilon$ (neighborhood radius) and $MinPts$ (minimum points required for a core point) are chosen empirically or using techniques such as the k-distance plot.
-    \item \textbf{Clustering:} DBSCAN is applied to group similar flux values and identify low-density regions as outliers.
-    \item \textbf{Anomaly Classification:} Points labeled as noise (outliers) by DBSCAN are flagged as potential stellar flares.
-\end{itemize}
-
-By comparing DBSCAN-identified outliers with anomalies detected using ARIMA, Isolation Forest, and Gaussian Mixture Models, we evaluate the algorithm’s effectiveness in identifying transient flux variations. Since flares appear as sudden brightness spikes, they are expected to reside in low-density regions, making DBSCAN a useful method for detecting them.
+We use the `DBSCAN` function fro `sklearn` library in Python to fit the time series data and visualize the anomaly detection results. For DBSCAN, the algorithm could not handle the missing values as well as the irregular time space, so we also need to handle the missing values before fitting.
 
 
 # Results
 ## Time Series Model
-For this study, we apply the \texttt{auto.arima} function to select an optimal ARIMA model based on the Akaike Information Criterion (AIC) or Bayesian Information Criterion (BIC). The selected model for the light curve data is ARIMA$(4,1,1)$, which indicates:
+
+The best fit ARIMA model for the light curve data is ARIMA$(4,1,1)$, which indicates:
 \begin{itemize}
     \item $p = 4$: Four lagged terms are included to account for autocorrelation.
     \item $d = 1$: Differencing is applied once to remove trends and ensure stationarity.
     \item $q = 1$: One lagged error term is included to model short-term fluctuations.
 \end{itemize}
-### With Missing Value Imputation
-```{r ts, out.width = "50%",fig.cap="model results",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
+
+Figure \@ref(fig:ts) shows the the model results for imputed data and Figure \@ref(fig:ts2) shows the the model results for the original data. The red points are the detected outliers with the blue dashed line representing the upper and lower threshold of 3 standard deviations. For the residual plots, we could see that the are mostly normally distributed around 0 while heavy right tails may indicate the outliers.
+
+Since the `auto.arima` function handle the irregular time space, and the final results seems to be very similar for the two datasets, considering extra bias introduced by the imputation, we could keep the original one and just remove observations with missing flux value at the end.
+
+```{r ts, out.width = "50%",fig.cap="ARIMA model results for imputed data",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
 include_graphics("Figure/arima_129.png")
 include_graphics("Figure/res_arima_129.png")
 ```
 
-### Without Missing Value Imputation
-```{r ts2, out.width = "50%",fig.cap="model results",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
+```{r ts2, out.width = "50%",fig.cap="ARIMA model results for original data",fig.subcap=c("result", "residual"), fig.align='center', fig.pos="H"}
 include_graphics("Figure/arima_129_without_imputation.png")
 include_graphics("Figure/res_arima_129_without_imputation.png")
 ```
 
 ## Machine Learning Model
-### With Missing Value Imputation
-```{r ml, out.width = "50%",fig.cap="model results",fig.subcap=c("if", "gmm", "dbscan"), fig.align='center', fig.pos="H", fig.ncol=2}
+
+Figure \@ref(fig:ml) shows the the model results for imputed data and Figure \@ref(fig:ml2) shows the the model results for the original data. Figure \@ref(fig:ml-1) and Figure \@ref(fig:ml2-1) show the result for Isolation Forest with outliers marked as -1. So we could see that points in blue are the resulted anomaly. It is noticed that the period we imputed actually has no anomaly detected, aligning with the assumption.
+
+```{r ml, out.width = "50%",fig.cap="Machine learning model results for imputed data",fig.subcap=c("IF", "GMM", "DBSCAN"), fig.align='center', fig.pos="H", fig.ncol=2}
 include_graphics("Figure/IF_1_129.png")
 include_graphics("Figure/GMM_1_129.png")
 include_graphics("Figure/DBSCAN_1_129.png")
 ```
 
-### Without Missing Value Imputation
-```{r ml2, out.width = "50%",fig.cap="model results",fig.subcap=c("if", "gmm", "dbscan"), fig.align='center', fig.pos="H", fig.ncol=2}
+Figure \@ref(fig:ml-2) and Figure \@ref(fig:ml2-2) shows the result for the GMM with anomaly marked as 1, so in this case, the red lines are the detected anomaly. For Figure \@ref(fig:ml-3) and Figure \@ref(fig:ml2-3), the plots show detected results for DBSCAN where 1 indicates anomaly. The Isolation Forest and GMM give similar results, however, DBSCAN gives much fewer detected outliers.
+
+To better validate if the imputation gives different results from the original dataset, we plot the density distribution of anomaly score in the IF model as shown in Figure \@ref(fig:comp). We could see that the red line shifts rightward, which indicates it is more likely to detect a point as an outlier in the imputed data. This also aligns with Figure \@ref(fig:comp-2) that IF detects more outliers with imputed data. While other two methods shows similar results for the original data and imputed data, the IF algorithm actually gives a different result.
+
+```{r ml2, out.width = "50%",fig.cap="Machine learning model results for the original data",fig.subcap=c("IF", "GMM", "DBSCAN"), fig.align='center', fig.pos="H", fig.ncol=2}
 include_graphics("Figure/IF_1_129_without_imputation.png")
 include_graphics("Figure/GMM_1_129_without_imputation.png")
 include_graphics("Figure/DBSCAN_1_129_without_imputation.png")
 ```
 
-## Comparison
+```{r comp, out.width = "50%",fig.cap="Comparison for Isolation Forest on the original data and imputed data",fig.subcap=c("Anomaly Score", "Total Number"), fig.align='center', fig.pos="H"}
+include_graphics("Figure/IF_comparison_129.png")
+include_graphics("Figure/IF_comparison_129_num.png")
+```
 
 # Discussion
 ## Current Work
-decide to use no imputation data, why
-sensitivity analysis
+
+After comparing 4 model results for the original data and imputed data, we decide to use the original dataset since the model themselves could handle the small time gap. Also, since the missing time gap was due to instrumental errors, they were not missing by random, the imputation may introduce extra bias (as in the IF algorithm). As a result, for further model fitting, we will focus on the original dataset.
 
 ## Next Steps
 
-Tune parameter
+The model, especially the machine learning models, are just preliminary since I used the default parameter setting in the function. To better fit the models, I will then tune the hyperparameters in the model and fit on the original dataset. In this case, I would consider grid search to find the best combinations of parameter values. The key point here may be to find the key metrics for grid search since we only have unlabeled data. 
 
-decide validation and metric to compare model performance
-
+Another thing is to validate the models since our goal is also to compare the model performance. Since the data is unlabelled, and we use unsupervised learning, I may consider perform the models on the simulated dataset and to see how it works. Also, since we used both machine learning methods and time series models, it may hard to find a general metric that applies to all of the models.
