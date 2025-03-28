@@ -72,8 +72,7 @@ checkresiduals(arima_model)
 res_mean <- mean(arima_res) 
 res_sd <- sd(arima_res)
 threshold_upper <- res_mean + 3 * res_sd
-threshold_lower <- res_mean - 3 * res_sd
-anomalies <- which(arima_res > threshold_upper | arima_res < threshold_lower)
+anomalies <- which(arima_res > threshold_upper)
 
 # Change to original time scale due to differentiation
 BJD_times <- data_129$time
@@ -85,6 +84,43 @@ plot(bjd_times_residuals, arima_res,
 points(bjd_times_residuals[anomalies], arima_res[anomalies], 
        col = "red", pch = 19, cex = 0.5)
 abline(h = c(threshold_upper, threshold_lower), col = "blue", lty = 2)
+
+# ---- CLUSTER ANOMALIES ----
+# Define time threshold for clustering consecutive anomalies
+time_threshold <- 0.02
+anomaly_times <- bjd_times_residuals[anomalies]
+
+# Initialize cluster
+clustered_anomalies <- c()
+current_cluster <- anomaly_times[1]
+
+# Loop through anomalies to cluster nearby points
+for (i in 2:length(anomaly_times)) {
+  if (anomaly_times[i] - anomaly_times[i - 1] <= time_threshold) {
+    current_cluster <- c(current_cluster, anomaly_times[i])
+  } else {
+    # Retain the anomaly with the maximum residual in the cluster
+    cluster_indices <- which(bjd_times_residuals %in% current_cluster)
+    max_res_index <- cluster_indices[which.max(arima_res[cluster_indices])]
+    clustered_anomalies <- c(clustered_anomalies, bjd_times_residuals[max_res_index])
+    current_cluster <- anomaly_times[i]
+  }
+}
+
+# Add the last cluster if not empty
+if (length(current_cluster) > 0) {
+  cluster_indices <- which(bjd_times_residuals %in% current_cluster)
+  max_res_index <- cluster_indices[which.max(arima_res[cluster_indices])]
+  clustered_anomalies <- c(clustered_anomalies, bjd_times_residuals[max_res_index])
+}
+
+# ---- PLOT RESULTS ----
+plot(bjd_times_residuals, arima_res,
+     main = "Detected Anomalies in ARIMA Residuals",
+     ylab = "Residuals", xlab = "Time", type = "l")
+points(clustered_anomalies, arima_res[bjd_times_residuals %in% clustered_anomalies],
+       col = "red", pch = 19, cex = 0.5)
+abline(h = threshold_upper, col = "blue", lty = 2)
 
 #### Save model ####
 # saveRDS(arima_model, "./Output/Model/ARIMA_model_129_without_imputation.rds")
