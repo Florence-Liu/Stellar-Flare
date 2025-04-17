@@ -57,7 +57,7 @@ arima_model <- auto.arima(data_129_ts, seasonal = FALSE, stepwise = FALSE,
                           approximation = FALSE)
 summary(arima_model)
 
-arima_model <- readRDS("./Output/Model/ARIMA_model_129_without_imputation.rds")
+arima_model <- readRDS("./Output/Model/ARIMA_model.rds")
 
 ### Diagnostic ###
 ## Portmanteau test ##
@@ -123,4 +123,4 @@ points(clustered_anomalies, arima_res[bjd_times_residuals %in% clustered_anomali
 abline(h = threshold_upper, col = "blue", lty = 2)
 
 #### Save model ####
-# saveRDS(arima_model, "./Output/Model/ARIMA_model_129_without_imputation.rds")
+# saveRDS(arima_model, "./Output/Model/ARIMA_model.rds")
