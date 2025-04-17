@@ -23,3 +23,41 @@ The repo is structured as:
     -   `Assignment` contains files and figures used to generate proposal, EDA, progress report, and final report.
     -   `Data` contains cleaned data after handling missing values and used to fit models.
     -   `Model` contains models for different methods.
+
+
+## Methods Summary
+
+- **ARIMA(4,1,1)** model is fitted to the light curve using `auto.arima` from the R `forecast` package. Anomalies are identified based on 3-sigma residual thresholds and clustered using a time proximity threshold.
+- **DBSCAN** is applied using `sklearn.cluster` with tuned `eps` and `min_samples` parameters. Flux outliers above the median are clustered into flare events.
+- **Isolation Forest** is implemented using `sklearn.ensemble` with contamination parameter selected via visualization.
+
+
+##  Requirements
+
+- Python ≥ 3.8  
+  - `numpy`, `pandas`, `matplotlib`, `scikit-learn`
+- R ≥ 4.0  
+  - `forecast`, `ggplot2`, `tseries`
+
+## How to Run
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Florence-Liu/Stellar-Flare.git
+   cd Stellar-Flare
+   
+2. For time series analysis:
+   Run `Script/Arima_model.R` in RStudio
+
+3. For ML-based detection:
+   Open and execute `Scripts/DBSCAN.ipynb` and `Scripts/IF.ipynb`
+
+4. Simulated studies:
+   Open and execute `Script/Simulation.ipynb`
+
+5. Final Report:
+   Run `Output/Assignment/Final Report.Rmd`
+
+## Acknowledgements
+This project was completed as part of STA2453:  Data Science Methods, Collaboration, and Communication, Winter 2025 at the University of Toronto.
+I would like to sincerely thank Professor Vianey Leos-Barajas for her invaluable guidance throughout the course, as well as my collaborator Arturo for his thoughtful feedback and support during the project.
