@@ -1,6 +1,15 @@
 #### Preamble ####
-# Purpose: Conducting Time Series Analysis and ARIMA model on Light Curve data 
-# for TIC 129646813 without imputation.
+# This script analyzes TESS light curve data for star TIC 129646813 to detect potential
+# stellar flares using ARIMA modeling. The process includes:
+#
+# 1. Exploratory Data Analysis (EDA) and visualization of missing values.
+# 2. Time series construction, transformation (differencing), and decomposition.
+# 3. Stationarity checks using ADF tests.
+# 4. ARIMA model fitting and residual diagnostics.
+# 5. Anomaly detection from residuals based on a 3-sigma rule.
+# 6. Temporal clustering of nearby anomalies to identify likely flare events.
+# 7. Visualization of detected flare candidates.
+#
 
 #### Workspace setup ####
 library(tidyverse)
@@ -39,10 +48,12 @@ acf(data_129_ts_diff)
 acf(data_129_ts_diff, type = "partial")
 
 ### Decomposition ###
+# STL decomposition to extract seasonal, trend, and remainder components
 decomposed_stl <- stl(data_129_ts, s.window = "periodic")
 decomposed_stl_plot <- autoplot(decomposed_stl)
 print(decomposed_stl_plot)
 
+# STL on differenced series
 decomposed_stl <- stl(data_129_ts_diff, s.window = "periodic")
 decomposed_stl_plot <- autoplot(decomposed_stl)
 print(decomposed_stl_plot)
@@ -85,7 +96,7 @@ points(bjd_times_residuals[anomalies], arima_res[anomalies],
        col = "red", pch = 19, cex = 0.5)
 abline(h = c(threshold_upper, threshold_lower), col = "blue", lty = 2)
 
-# ---- CLUSTER ANOMALIES ----
+### Cluster anomalies ###
 # Define time threshold for clustering consecutive anomalies
 time_threshold <- 0.02
 anomaly_times <- bjd_times_residuals[anomalies]
@@ -114,7 +125,7 @@ if (length(current_cluster) > 0) {
   clustered_anomalies <- c(clustered_anomalies, bjd_times_residuals[max_res_index])
 }
 
-# ---- PLOT RESULTS ----
+# Plot the final result
 plot(bjd_times_residuals, arima_res,
      main = "Detected Anomalies in ARIMA Residuals",
      ylab = "Residuals", xlab = "Time", type = "l")
